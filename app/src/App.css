@@ -1,0 +1,128 @@
+.App {
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 50px;
+  float: right;
+  color:#03A9F4
+}
+.login-logo{
+  animation: App-logo-spin infinite 20s linear;
+  margin-top: 30px;
+}
+.App-header {
+  background-color: #263238;
+  height: 70px;
+  padding: 10px;
+  color: white;
+}
+
+.App-title {
+  font-size: 1.5em;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+
+}@keyframes cube-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}@keyframes engine-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}@keyframes cloud-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+Drawer{
+  background-color: #03A9F4;
+}
+
+.subHeader{
+  background-color: #C5CAE9;
+  height: 60px;
+}
+.btn-logo{
+  color:#03A9F4
+}
+.btn-logo:hover{
+  animation: App-logo-spin infinite 10s linear;
+
+}
+.cube{
+  height: 60px;
+  margin: 20px;
+  float:left
+}
+.cube:hover{
+  opacity: 0.6;
+}.cloud:hover{
+  opacity: 0.6;
+}.engine:hover{
+  opacity: 0.6;
+}
+.engine{
+  height: 60px;
+  margin: 0px;
+  float:left
+
+
+}
+.func-btn{
+  width: 150px;
+  height: 80px;
+  background-color: #C5CAE9;
+  font-size: 40px;
+
+}
+.formo{
+  margin-top: 10px;
+  margin-left: 20px;
+}
+.formo_login{
+  margin: 0 auto;
+  margin-top: 10px;
+}
+.Login{
+  text-align:center;
+  margin:0 auto;
+  width: 400px;
+  height:500px;
+  margin-top:30px;
+}
+
+.setup{
+  text-align:center;
+  margin:0 auto;
+  width: 800px;
+  height:700px;
+  margin-top:300px;
+}
+
+.cloud{
+  height: 60px;
+  margin: 20px;
+  float:left
+}
+.aws_logo{
+  width:200px;
+  height:200px;
+}
+.page{
+  height:600px;
+}
+.paper{
+  margin-bottom: 20px;
+  height: 300px;
+}
+.login-btn{
+  background-color: #ECEFF1;
+  color:#03A9F4;
+  width:200px;
+}
