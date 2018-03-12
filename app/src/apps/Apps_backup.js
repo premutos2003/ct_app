@@ -12,7 +12,6 @@ import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'mat
 import FlatButton from 'material-ui/FlatButton';
 import Divider from "material-ui/Divider"
 import AppsDialog from './AppsDialog';
-import AppComponent from './AppComponent';
 import Subheader from "material-ui/Subheader"
 import Paper from "material-ui/Paper"
 import Spa from "material-ui/svg-icons/places/spa"
@@ -24,37 +23,18 @@ import EnvTabs from "./EnvTabs"
 class Apps extends Component {
     constructor(props){
         super(props)
-       this.app_type = props.app_type
         this.state={
             modal_open:false,
-            items:{
-                development:{node:[],
-                    react:[]},
-                staging:{node:[],
-                    react:[]},
-                production:{node:[],
-                    react:[]},
-            },
+            items:{node:[],react:[]},
             snack_open:false,
             app_type:"",
-            active:"development",
             status:{
                 react:<div></div>,
                 node:<div></div>
             }
         }
     }
-    componentWillMount=()=>{
-        axios.get("http://localhost:3000/getAllApps").then((response)=>{
-            let items = this.state.items
-            if(response.data.length>0){
-                response.data.map((app)=>{
-                    items[app["env"]][app["type"]].push(<AppComponent app={app}></AppComponent>)
-                })
-                this.setState({items:items})
-            }
-        })
-    }
+
     handleOpen = (type) => {
         this.setState({modal_open: true,app_type:type});
     };
@@ -62,20 +42,13 @@ class Apps extends Component {
     handleClose = () => {
         this.setState({modal_open: false});
     };
-    getActive=()=>{
-        console.log(this.state.active,"TESTO1")
-        return this.state.active
-    }
+
     addItemToTable = (object) => {
         let items = this.state.items
-        console.log(items)
-        console.log(object)
-        console.log("FUCKKKKSADSADSSAD11111")
-        console.log(items[object["env"]])
         //axios.get("http://localhost:3000/buildJob?git="+object["git"]+"&stack="+object["stack"]+"&app_id="+object["app_id"])
-            axios.post("http://localhost:3000/insert_app",object)
+            axios.get("http://localhost:3000/status")
             .then(()=>{
-                items[object["env"]][object["type"]].push(<AppComponent app={object}></AppComponent>)
+                items[object["type"]].push(<ListItem secondaryText={object.stack} leftAvatar={<Avatar icon={<Spa/>}/>}>{object.app_id}</ListItem>)
                     let status = this.state.status
                     status[object["type"]] = <CircularProgress style={{float:"right"}}></CircularProgress>
                     this.setState({
@@ -99,22 +72,30 @@ class Apps extends Component {
             snack_open: false,
         });
     };
-    handleChangeTab=(tab)=>{
-        console.log(tab)
-        this.setState({active:tab})
-    }
     render() {
         return (
             <div className="container-fluid app-view">
                 <div className="row">
-               <h3>Apps </h3>
+               <h3>Apps</h3>
+                    <EnvTabs></EnvTabs>
                     <Divider></Divider>
-                    <EnvTabs active={this.handleChangeTab} dev={this.state.items["development"]} stag={this.state.items["staging"]} prod={this.state.items["production"]}></EnvTabs>
-                    <AppsDialog env={this.getActive} type={this.state.app_type} addItems={this.addItemToTable} open={this.state.modal_open}  close={this.handleClose}/>
-            </div>
+                    <div className="col-md-5">
+                        <Card className="app_obj" >
+                            <CardHeader style={{backgroundColor:"#E8F5E9"}} subtitle="Deploy app" title="Node.js">{this.state.status.node}</CardHeader><Divider></Divider><List><ListItem disabled={true}  rightIconButton={<FloatingActionButton mini={true} backgroundColor="#80D8FF"  onClick={()=>this.handleOpen("node")} className="add-btn"><ContentAdd></ContentAdd></FloatingActionButton>} nestedItems={this.state.items["node"]} open={true} primaryText="AWS"/></List>
+                        <AppsDialog type="node" addItems={this.addItemToTable} open={this.state.modal_open}  close={this.handleClose}/></Card>
+                    </div>
 
+                </div>
+                <div className="row">
+                    <div className="col-md-5">
+                        <Card className="app_obj" >
+                            <CardHeader style={{backgroundColor:"#E1F5FE"}} subtitle="Deploy app" title="React.js"></CardHeader><Divider></Divider><List><ListItem disabled={true} rightIconButton={<FloatingActionButton mini={true}  backgroundColor="#80D8FF"  onClick={()=>this.handleOpen("react")} className="add-btn"><ContentAdd></ContentAdd></FloatingActionButton>} open={true} primaryText="AWS" nestedItems={this.state.items["react"]}/></List>
+                            <AppsDialog type={this.state.app_type} addItems={this.addItemToTable} open={this.state.modal_open}  close={this.handleClose}/></Card>
+                    </div>
+                </div>
+                <div style={{marginTop:30}}>
+                </div>
                 <Snackbar
-                    style={{textAlign:"center"}}
                     open={this.state.snack_open}
                     message="Started deployment pipeline"
                     autoHideDuration={4000}

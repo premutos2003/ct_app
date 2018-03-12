@@ -30,19 +30,41 @@ import {Tabs, Tab} from 'material-ui/Tabs';
 import IconButton from 'material-ui/IconButton';
 import ActionHome from 'material-ui/svg-icons/action/home';
 import FontIcon from 'material-ui/FontIcon';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import ContentAdd from 'material-ui/svg-icons/content/add';
+import Cube from "./cube.jpg"
+import HomePage from "./HomePage"
+import Avatar from "material-ui/Avatar"
+import SvgIcon from 'material-ui/SvgIcon';
+import UserIcon from 'material-ui/svg-icons/action/face';
+
+let crab = require("../icons/crab.svg")
+
 
 
 class Home extends Component {
+
     constructor(props){
         super(props)
+        this._child="",
         this.state={
-            page:<div></div>,
-            page_str:""
+            user : this.props.user,
+            page: <HomePage/>,
+            page_str:"",
+            open:{apps:false,settings:false,cloud:false,metrics:false,pipe:false},
+            app_type:""
         }
+
         this.changePage = this.changePage.bind(this)
+    }
+    componentWillMount=()=>{
     }
     changePage = (page) =>{
         let pageElem = <div></div>
+        let open = this.state.open
+        Object.keys(open).forEach((key)=>{
+            open[key] =false
+        })
         let page_string=""
         switch (page){
             case "Settings":
@@ -50,8 +72,9 @@ class Home extends Component {
                 page_string="Settings"
                 break;
             case "Apps":
-                pageElem =<Apps/>
+                pageElem =<Apps ref={(child) => { this._child = child; }} app_type={this.state.app_type}/>
                 page_string="Apps"
+                open["apps"] = true
                 break;
             case "Metrics":
                 pageElem= <Metrics/>
@@ -65,12 +88,21 @@ class Home extends Component {
                 pageElem= <Pipeline/>
                 page_string="Pipe"
                 break;
-
+            case "Home":
+                pageElem= <HomePage/>
+                page_string="Home"
+                break;
         }
         this.setState({
             page:pageElem,
-            page_str:page_string
+            page_str:page_string,
+            open:open
         })
+    }
+
+    handleAppType=(type)=>{
+        this.setState({app_type:type})
+        this._child.handleOpen(type)
     }
     handleClick(item){
         switch (item){
@@ -80,7 +112,10 @@ class Home extends Component {
     }
 
     render() {
-
+        let app_types=[
+            <ListItem  leftAvatar={<Avatar backgroundColor="#B2DFDB">N</Avatar>} style={{height:70}} className="nav-icn" onClick={()=>{this.handleAppType("node")}} hoverColor="#E0F2F1" secondaryText="Node.js" primaryText="Express"></ListItem>,
+            <ListItem  leftAvatar={<Avatar backgroundColor="#B3E5FC">R</Avatar>} className="nav-icn" onClick={()=>{this.handleAppType("react")}} hoverColor="#E1F5FE" secondaryText="Node.js" primaryText="React"></ListItem>,
+        ]
         let styles = {
             home: {backgroundColor: ""},
             apps: {backgroundColor: ""},
@@ -89,22 +124,22 @@ class Home extends Component {
             help: {backgroundColor: ""}
         }
         return (
-                <div className="container-fluid">
-            <div className="row">
-                <div className="col-md-2"><Drawer open={true}><header className="App-header">
+                <div className="container-fluid app-view">
+            <div className="row ">
+                <div className="col-md-3"><Drawer open={true}><header className="App-drawer"><List><ListItem style={{color:"white",fontSize:18}} leftAvatar={<Paper style={{width:50,height:50,textAlign:"center"}} circle={true} ><img width={40} size={40} src={crab}></img></Paper>}>{this.state.user}</ListItem></List>
                 </header>
                 <List>
-                    <ListItem  onClick={()=>this.handleClick()} leftIcon={<Moni/>}>Home</ListItem>
-                    <ListItem rightIcon={<IconButton><FontIcon className="muidocs-icon-action-home" /></IconButton>}  nestedItems={<ListItem >AWS</ListItem>} onClick={()=>this.changePage("Apps")} leftIcon={<Monitor/>}>My Apps</ListItem>
-                    <ListItem rightIcon={<IconButton><FontIcon className="muidocs-icon-action-home" /></IconButton>}  nestedItems={<ListItem >AWS</ListItem>} leftIcon={<Cloud_Icon/>}>My Cloud</ListItem>
-                    <ListItem leftIcon={<Pipe/>} >Pipelines</ListItem>
-                    <ListItem leftIcon={<Settings_Icon/>} >Settings</ListItem>
-                    <ListItem leftIcon={<Help/>} >Help</ListItem>
+                    <ListItem className="nav-icn" onClick={()=>this.changePage("Home")}  leftIcon={<Moni/>}>Home</ListItem>
+                    <ListItem className="nav-icn"rightIcon={<IconButton iconClassName="muidocs-icon-action-home"></IconButton>} open={this.state.open["apps"]} nestedItems={app_types}  onClick={()=>this.changePage("Apps")} leftIcon={<Monitor/>}>My Apps</ListItem>
+                    <ListItem className="nav-icn"onClick={()=>this.changePage("Cloud")}rightIcon={<IconButton><FontIcon className="muidocs-icon-action-home" /></IconButton>}   leftIcon={<Cloud_Icon/>}>My Cloud</ListItem>
+                    <ListItem className="nav-icn"onClick={()=>this.changePage("Pipe")} leftIcon={<Pipe/>} >Pipelines</ListItem>
+                    <ListItem className="nav-icn"leftIcon={<Settings_Icon/>} >Settings</ListItem>
+                    <ListItem className="nav-icn"leftIcon={<Help/>} >Help</ListItem>
                 </List>
                 </Drawer></div>
                 <div className="col-md-7">
                     <FadeProps>
-                    {this.state.page}
+                        {this.state.page}
                     </FadeProps>
                 </div>
 

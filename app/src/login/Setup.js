@@ -27,7 +27,7 @@ class Setup extends Component {
     }
     submitLogin(){
         console.log("AO")
-        this.props.onLogin()
+        this.props.onRegister()
     }
     render() {
         const style = {
@@ -41,16 +41,15 @@ class Setup extends Component {
         return (
             <div>
                 <div className="container-fluid">
-
                     <div className="col-md-3">
                         <Drawer width={380}>
                             <header className="App-header">
                             </header>
                             <div style={{margin:10}}>
-                            <h3>Setup</h3></div>
+                            <h3>Initial setup</h3></div>
                             <Divider></Divider>
                             <div style={{textAlign:"left",margin:10}}>
-                            <VerticalLinearStepper onLogin={this.props.onLogin}></VerticalLinearStepper>
+                            <VerticalLinearStepper onRegister={this.props.onRegister}></VerticalLinearStepper>
                             </div>
                         </Drawer>
                     </div>

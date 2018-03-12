@@ -29,17 +29,83 @@ class VerticalLinearStepper extends React.Component {
 
     state = {
         values:[],
+        user:{ name:"",
+            password:"",
+            password_confirm:"",
+            AWS:{acc_key:"",
+                acc_sec:"",},
+            GCP:{ acc_key:"",
+                acc_sec:"",},
+
+        git_key:""},
+        errorText_name:"",
+        errorText_password:"",
+        errorText_password_confirm:"",
+        errorText_provider:"",
         finished: false,
         stepIndex: 0,
         providers:[]
     };
 
-    handleNext = () => {
+    handleNext = (step) => {
         const {stepIndex} = this.state;
-        this.setState({
-            stepIndex: stepIndex + 1,
-            finished: stepIndex >= 4,
-        });
+        switch(step){
+            case 0:
+                if(this.state.user.name==""){
+                    this.setState({
+                        errorText_name:"You must specify a user name",
+                        finished: stepIndex >= 4,
+                    });
+                    break;
+                }
+                if(this.state.user.password==""){
+                    this.setState({
+                        errorText_password:"You must specify a password",
+                        finished: stepIndex >= 4,
+                    });
+                    break;
+                }
+                if(this.state.user.password_confirm=="" || this.state.user.password_confirm!=this.state.user.password){
+                    this.setState({
+                        errorText_password_confirm:"Passwords doesn't match",
+                        finished: stepIndex >= 4,
+                    });
+                    break;
+                }
+                this.setState({
+                    stepIndex: stepIndex + 1,
+                    finished: stepIndex >= 4,
+                });
+                break;
+            case 1:
+                if(this.state.values.length==0){
+                    this.setState({
+                        stepIndex: stepIndex + 2,
+                        finished: stepIndex >= 4,
+                    });
+                    break;
+                }
+                this.setState({
+                    stepIndex: stepIndex + 1,
+                    finished: stepIndex >= 4,
+                });
+                break;
+            case 2:
+                this.setState({
+                    stepIndex: stepIndex + 1,
+                    finished: stepIndex >= 4,
+                });
+            case 3:
+                this.setState({
+                    stepIndex: stepIndex + 1,
+                    finished: stepIndex >= 4,
+                });
+            case 4:
+                this.setState({
+                    stepIndex: stepIndex + 1,
+                    finished: stepIndex >= 4,
+                });
+        }
     };
 
     handlePrev = () => {
@@ -48,6 +114,15 @@ class VerticalLinearStepper extends React.Component {
             this.setState({stepIndex: stepIndex - 1});
         }
     };
+    changeValue = (e,type,subtype) => {
+        const value = e.target.value;
+        var user = this.state.user
+        if(subtype==null){
+            user[type] = value;
+        }
+        else{user[subtype][type] = value;}
+        this.setState({user:user});
+    }
 
     renderStepActions(step) {
         const {stepIndex} = this.state;
@@ -55,10 +130,10 @@ class VerticalLinearStepper extends React.Component {
         return (
             <div style={{margin: '12px 0'}}>
                 <RaisedButton
-                    backgroundColor="#C5CAE9"
+                    buttonStyle={{backgroundColor:"#80D8FF"}}
                     label={stepIndex === 4 ? 'Finish' : 'Next'}
                     primary={true}
-                    onClick={this.handleNext}
+                    onClick={()=>this.handleNext(step)}
                     style={{marginRight: 12}}
                 />
                 {step > 0 && (
@@ -80,7 +155,7 @@ class VerticalLinearStepper extends React.Component {
     }
     menuItems(values) {
         const platforms = [
-            'Amazon Web Services'
+            'AWS',"GCP"
         ];
         return platforms.map((name) => (
             <MenuItem
@@ -98,8 +173,8 @@ class VerticalLinearStepper extends React.Component {
         values.map((name) => (
             p.push(
                 <div>
-                <TextField floatingLabelText="Access-Key"></TextField>
-                <TextField floatingLabelText="Access-Secret"></TextField>
+                <TextField onChange={(e)=>this.changeValue(e,"acc_key",name)} floatingLabelText="Access-Key"></TextField>
+                <TextField onChange={(e)=>this.changeValue(e,"acc_sec",name)} floatingLabelText="Access-Secret"></TextField>
                 <Chip>{name}</Chip>
                 </div>
             )
@@ -110,25 +185,26 @@ class VerticalLinearStepper extends React.Component {
         const {finished, stepIndex} = this.state;
         const muiTheme = getMuiTheme({
             stepper: {
-                iconColor: '#C5CAE9', // or logic to change color
+                iconColor: '#80D8FF', // or logic to change color
             }
+
+
         })
 
 
         return (
             <div style={{maxWidth: 380, maxHeight: 400, margin: 'auto'}}>
                 <MuiThemeProvider muiTheme={muiTheme}>
-                <Stepper iconColor="#263238" activeStep={stepIndex} orientation="vertical">
+                <Stepper  activeStep={stepIndex} orientation="vertical">
                     <Step>
                         <StepLabel><h4>Set credentials</h4></StepLabel>
                         <StepContent>
                             <p>
                                 Set your Cosmo login credentials
                             </p>
-                            <TextField floatingLabelText="user name"></TextField>
-                            <TextField type="password" floatingLabelText="password"></TextField>
-                            <TextField type="password" floatingLabelText="confirm password"></TextField>
-
+                            <TextField floatingLabelShrinkStyle={{color:"#263238",fontSize:20}} inputStyle={{color:"#263238"}} underlineFocusStyle={{borderColor:"#80D8FF"}} value={this.state.user.name} errorText={this.state.errorText_name} onChange={(e)=>this.changeValue(e,"name",null)} floatingLabelText="User name"></TextField>
+                            <TextField floatingLabelShrinkStyle={{color:"#263238",fontSize:20}}  inputStyle={{color:"#263238"}}  underlineFocusStyle={{borderColor:"#80D8FF"}} value={this.state.user.password}errorText={this.state.errorText_password} onChange={(e)=>this.changeValue(e,"password",null)}type="password" floatingLabelText="password"></TextField>
+                            <TextField floatingLabelShrinkStyle={{color:"#263238",fontSize:20}}  inputStyle={{color:"#263238"}}  underlineFocusStyle={{borderColor:"#80D8FF"}} value={this.state.user.password_confirm}errorText={this.state.errorText_password_confirm} onChange={(e)=>this.changeValue(e,"password_confirm",null)}type="password" floatingLabelText="confirm password"></TextField>
                             {this.renderStepActions(0)}
                         </StepContent>
                     </Step>
@@ -138,6 +214,7 @@ class VerticalLinearStepper extends React.Component {
                             <p>
                                 Select the cloud providers, on which you wish to deploy
                                 your applications.
+                                Leave Empty to configure it later
                             </p>
                             <SelectField onChange={this.handleChangePlatform} multiple={true} floatingLabelText="Public Cloud Provider" value={this.state.values}>
                                 {this.menuItems(this.state.values)}
@@ -159,7 +236,7 @@ class VerticalLinearStepper extends React.Component {
                         <StepLabel><h4>Integrate Git</h4></StepLabel>
                         <StepContent>
                             <p>Integrate Cosmo with your Git repository by specifying a deploy key</p>
-                            <TextField floatingLabelText="Git deploy key"></TextField>
+                            <TextField onChange={(e)=>this.changeValue(e,"git_key")} floatingLabelText="Git deploy key"></TextField>
                             {this.renderStepActions(3)}
                         </StepContent>
                     </Step>
@@ -176,7 +253,7 @@ class VerticalLinearStepper extends React.Component {
                 </Stepper>
 
                 {finished && (
-                    this.props.onLogin()
+                    this.props.onRegister(this.state.user)
                 )}
                 </MuiThemeProvider>
             </div>

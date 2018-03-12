@@ -17,7 +17,35 @@
   padding: 10px;
   color: white;
 }
+.App-drawer{
+  background-color: #263238;
+  height: 70px;
+  padding: 1px;
+  color: white;
+}
+.app_obj{
+  margin-top:20px;
+}
 
+.app-comp-header{
+  height:70px;
+  padding:0px;
+}
+.nav-icn{
+  .height:40px;
+}
+.center-page{
+  text-align:center;
+  margin-top:50px;
+  margin-left:100px;
+  z-index:-3;
+  opacity: 0.3;
+}
+.postit{
+  width: 300px;
+  height:200px;
+  margin:20px;
+}
 .App-title {
   font-size: 1.5em;
 }
@@ -87,14 +115,14 @@ Drawer{
 }
 .formo_login{
   margin: 0 auto;
-  margin-top: 10px;
+  margin-top: 5px;
+  color:#FFF
 }
 .Login{
   text-align:center;
   margin:0 auto;
   width: 400px;
-  height:500px;
-  margin-top:30px;
+  height:610px;
 }
 
 .setup{
@@ -102,7 +130,8 @@ Drawer{
   margin:0 auto;
   width: 800px;
   height:700px;
-  margin-top:300px;
+  margin-top:250px;
+
 }
 
 .cloud{
@@ -125,4 +154,33 @@ Drawer{
   background-color: #ECEFF1;
   color:#03A9F4;
   width:200px;
+}
+.app-view{
+  margin-top: 5px;
+}
+.DialogApps{
+  padding:0
+}
+.add-btn{
+margin:20px;
+  float:right
+}
+.app_property{
+  opacity: 0.8;
+  padding:5px;
+}
+.dialog-header{
+  background-color: #E0F2F1;
+  height:100px;
+  font-size: 25px;
+  padding:30px;
+  color:#263238;
+  vertical-align: middle;
+ }
+.dialog-body{
+  padding:20px;
+}
+.modal-field{
+  margin:10px;
+  width:150px;
 }

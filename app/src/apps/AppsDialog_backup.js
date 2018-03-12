@@ -2,18 +2,25 @@
  * Created by alessandrofurkim on 21.11.17.
  */
 import React, { Component } from 'react';
+import Rocket from '../icons/startup.svg';
 import '../App.css';
 import FlatButton from "material-ui/FlatButton"
 import Dialog from 'material-ui/Dialog';
-
+import IconButton from 'material-ui/IconButton';
+import AddIcon from "material-ui/svg-icons/content/add-circle"
+import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import TextField from 'material-ui/TextField';
 import MenuItem from 'material-ui/MenuItem';
 import SelectField from 'material-ui/SelectField';
-import Avatar from "material-ui/Avatar"
-import injectTapEventPlugin from 'react-tap-event-plugin';
-import AppsStepper from "./AppsStepper"
+import Snackbar from 'material-ui/Snackbar';
+import Subheader from "material-ui/Subheader"
 
-injectTapEventPlugin();
+import {
+    TableRow,
+    TableRowColumn,
+} from 'material-ui/Table';
+import Divider from "material-ui/Divider"
+
 
 const platforms = [
     'AWS'
@@ -31,6 +38,7 @@ class DialogApps extends Component {
             react:"#E1F5FE"
         }
             this.state={
+
             open:props.open,
             runtime:1,
             platform:1,
@@ -53,7 +61,6 @@ class DialogApps extends Component {
             },
             instance_type:"Micro"
         }
-        this.handleClose = this.handleClose.bind(this)
     }
     handleChangeRuntime = (event, index, value) => {
         var curr_state = this.state.deploy_object
@@ -73,30 +80,33 @@ class DialogApps extends Component {
         this.setState({open: true});
     };
 
-    handleCancel=()=>{
-        this.setState({open:false})
-    }
-
-    handleClose = (app) => {
-        console.log("hello",app)
+    handleClose = (flag) => {
+        console.log("hello")
         let envi = this.env()
         console.log(envi,"BRUAPPPPPP")
-        app["provider"].forEach((provider)=>{
+
+        if(flag=="deploy"){
+            this.state.deploy_object["provider"].forEach((provider)=>{
                 let item = {
-                    app_id:app["app_id"],
-                    stack:app["stack"],
+                    app_id:this.state.deploy_object["app_id"],
+                    stack:this.state.deploy_object["stack"],
                     provider:provider,
-                    git:app["git"],
+                    git:this.state.deploy_object["git"],
+                    runtime:this.state.deploy_object["runtime"],
                     env:envi,
-                    created:app["created"],
-                    last:app["last"],
-                    type:app["type"]
+                    created:this.state.deploy_object["created"],
+                    last:this.state.deploy_object["last"],
+                    type:this.props.type
                  }
                 this.props.addItems(item)
             })
-        this.setState({open:false})
-    };
+            this.resetObjectState()
+        }
+        else{
+            this.close()
+        }
 
+    };
 
     resetObjectState =()=>{
         let date = new Date()
@@ -155,10 +165,6 @@ class DialogApps extends Component {
     }
 
     render() {
-        let badge = <div></div>
-        if(this.props.type=="node"){badge=<Avatar size={110} style={{float:"left"}} backgroundColor="#B2DFDB">N</Avatar>}
-        if(this.props.type=="react"){badge=<Avatar size={110} style={{float:"left"}} backgroundColor="#B3E5FC">R</Avatar>}
-
         const styles = {
             mediumIcon: {
                 width: 48,
@@ -179,19 +185,38 @@ class DialogApps extends Component {
                 padding: 30,
             },
         };
-
+        const actions = [
+            <FlatButton
+                label="Cancel"
+                primary={true}
+                onClick={()=>this.handleClose()}
+            />,
+            <FlatButton
+                label="Deploy App"
+                primary={true}
+                onClick={()=>this.handleClose("deploy")}
+            />,
+        ];
         const {values} = this.state;
         return (
             <div className="DialogApps">
                 <Dialog
+                    actions={actions}
                     modal={false}
                     open={this.props.open}
                     bodyStyle={{padding:0}}
-                    onRequestClose={this.close}
                 >
-                    <div style={{backgroundColor:this.colors[this.props.type]}} className="dialog-header" >{badge}</div>
-                    <br/>
-                    <AppsStepper close={this.close} onFinish={this.handleClose} type={this.props.type}/>
+                    <div style={{backgroundColor:this.colors[this.props.type]}} className="dialog-header" >Deploy app to cloud</div>
+                    <div className="dialog-body">
+
+                        <div style={{width:300}}><TextField onChange={(e)=>this.changeValue(e,"app_id")} className="modal-field"  floatingLabelText="App name"></TextField></div>
+                        <div style={{width:300}}><TextField onChange={(e)=>this.changeValue(e,"stack")}   className="modal-field" floatingLabelText="Stack name"></TextField></div>
+                        <div style={{width:500}}><TextField onChange={(e)=>this.changeValue(e,"git")}   fullWidth={true} className="modal-field" floatingLabelText="Git https url"></TextField></div>
+                        <br></br>
+                        <SelectField  className="modal-field" onChange={this.handleChangePlatform} multiple={true} floatingLabelText="Public Cloud Provider" value={this.state.values}>
+                            {this.menuItems(this.state.values)}
+                        </SelectField>
+                    </div>
 
                 </Dialog>
             </div>
