@@ -8,9 +8,15 @@ var bodyParser = require('body-parser');
 var index = require('./routes/index');
 var users = require('./routes/users');
 var initWorker = require('./routes/startWorker');
-var alla = require('./routes/alla');
+var insert_user = require('./routes/insert_user');
+var insert_app = require('./routes/insert_app');
+var getAll = require('./routes/get_all_db');
+var getAllApps = require('./routes/get_all_apps');
+var remove = require('./routes/remove_db');
+var status = require('./routes/status');
+var login = require('./routes/login');
 var cors = require('cors')
-
+var db = require("./db/db")
 var app = express();
 // view engine setup
 app.use(cors())
@@ -26,6 +32,13 @@ app.use(express.static(path.join(__dirname, '../app/build')));
 app.use('/', index);
 app.use('/users', users);
 app.use('/init-worker', initWorker);
+app.use('/getAllApps', getAllApps);
+app.use('/getAll', getAll);
+app.use('/insert_user', insert_user);
+app.use('/insert_app', insert_app);
+app.use('/remove', remove);
+app.use('/status', status);
+app.use('/login', login);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

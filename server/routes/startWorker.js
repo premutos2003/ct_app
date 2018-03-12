@@ -23,9 +23,10 @@ router.get('/', function(req, res, next) {
                 console.log("JENKINS UP AND RUNNING")
                 res.send('Jenkins up and running!')})
             })
-
     }
-    else {res.send("Jenkins is already running on port 8080")}
+    else {
+        res.status(400)
+        res.send("Jenkins is already running on port 8080")}
 
 
 });
